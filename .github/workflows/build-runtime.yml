@@ -1,0 +1,54 @@
+name: Build CodeV Runtime
+
+on:
+  workflow_dispatch:
+    inputs:
+      architectures:
+        description: Bootstrap architectures
+        required: true
+        default: aarch64
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  runtime:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install host tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io git patch file python3 xz-utils zip dpkg-dev
+
+      - name: Build source runtime
+        run: |
+          bash tools/codev-runtime/build-codev-runtime.sh \
+            --architectures "${{ inputs.architectures || 'aarch64' }}"
+
+      - name: Upload runtime artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: codev-runtime-${{ inputs.architectures || 'aarch64' }}
+          path: tools/codev-runtime/output/
+          if-no-files-found: error
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload APT Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: tools/codev-runtime/output/apt
+
+      - name: Deploy APT repository
+        id: deployment
+        uses: actions/deploy-pages@v4
+        environment:
+          name: github-pages
+          url: ${{ steps.deployment.outputs.page_url }}
