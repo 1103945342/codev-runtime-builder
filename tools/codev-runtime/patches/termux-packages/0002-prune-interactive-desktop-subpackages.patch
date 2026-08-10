@@ -15,12 +15,10 @@ diff --git a/scripts/buildorder.py b/scripts/buildorder.py
 diff --git a/packages/python/build.sh b/packages/python/build.sh
 --- a/packages/python/build.sh
 +++ b/packages/python/build.sh
-@@ -20 +20 @@
+@@ -20 +19,0 @@
 -TERMUX_PKG_BUILD_DEPENDS="tk"
-+TERMUX_PKG_BUILD_DEPENDS=""
-@@ -22 +22 @@
+@@ -22 +20,0 @@
 -TERMUX_PKG_SUGGESTS="python-tkinter"
-+TERMUX_PKG_SUGGESTS=""
-@@ -154 +154 @@
+@@ -154 +152 @@
 -	for module in _bz2 _curses _lzma _multiprocessing _sqlite3 _ssl _tkinter zlib _zstd; do
 +	for module in _bz2 _curses _lzma _multiprocessing _sqlite3 _ssl zlib _zstd; do
