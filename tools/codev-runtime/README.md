@@ -32,6 +32,10 @@ APT 仓库中的包与 Bootstrap 使用同一个 `com.codev` 前缀，避免安�
 补丁与构建脚本一同纳入版本控制，避免运行时依赖当前设备上已安装的
 Termux 文件。
 
+CodeV 运行时只发布命令行开发能力，因此构建配置会裁掉 Git GUI、
+GitK、Git-SVN 和 Python Tkinter 子包。这样不会把 Tk/X11、Subversion
+等桌面依赖带入内置 APT 仓库，Git、Python、pip 等命令行功能保持不变。
+
 ## Linux 或 GitHub Actions 构建
 
 依赖：

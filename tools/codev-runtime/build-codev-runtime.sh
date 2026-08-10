@@ -110,8 +110,20 @@ source "$GENERATOR_DIRECTORY/scripts/termux_generator_utils.sh"
 
 CONTAINER_NAME="${PACKAGE_NAME//./-}-codev-runtime-builder"
 export CONTAINER_NAME
+CODEV_PACKAGE_PATCHES_DIRECTORY="$SCRIPT_DIRECTORY/patches/termux-packages"
+CODEV_PACKAGE_PATCHSET_SHA256="$(
+    if [[ -d "$CODEV_PACKAGE_PATCHES_DIRECTORY" ]]; then
+        find "$CODEV_PACKAGE_PATCHES_DIRECTORY" -type f -print0 \
+            | sort -z \
+            | xargs -0 sha256sum \
+            | sha256sum \
+            | awk '{print $1}'
+    else
+        printf 'none\n'
+    fi
+)"
 PREPARED_MARKER="$PACKAGES_DIRECTORY/.codev-runtime-prepared"
-EXPECTED_MARKER="$PACKAGE_NAME|$GENERATOR_RESOLVED_COMMIT|$PACKAGES_RESOLVED_COMMIT"
+EXPECTED_MARKER="$PACKAGE_NAME|$GENERATOR_RESOLVED_COMMIT|$PACKAGES_RESOLVED_COMMIT|$CODEV_PACKAGE_PATCHSET_SHA256"
 CURRENT_MARKER=""
 if [[ -f "$PREPARED_MARKER" ]]; then
     CURRENT_MARKER="$(cat "$PREPARED_MARKER")"
@@ -123,7 +135,6 @@ if [[ "$CURRENT_MARKER" != "$EXPECTED_MARKER" ]]; then
     apply_patches \
         "$GENERATOR_DIRECTORY/f-droid-patches/bootstrap-patches" \
         "$PACKAGES_DIRECTORY"
-    CODEV_PACKAGE_PATCHES_DIRECTORY="$SCRIPT_DIRECTORY/patches/termux-packages"
     if [[ -d "$CODEV_PACKAGE_PATCHES_DIRECTORY" ]]; then
         apply_patches \
             "$CODEV_PACKAGE_PATCHES_DIRECTORY" \
