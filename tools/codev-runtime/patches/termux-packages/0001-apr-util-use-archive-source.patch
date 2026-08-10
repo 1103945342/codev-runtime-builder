@@ -1,0 +1,6 @@
+diff --git a/packages/apr-util/build.sh b/packages/apr-util/build.sh
+--- a/packages/apr-util/build.sh
++++ b/packages/apr-util/build.sh
+@@ -7 +7 @@
+-TERMUX_PKG_SRCURL=https://downloads.apache.org/apr/apr-util-${TERMUX_PKG_VERSION}.tar.gz
++TERMUX_PKG_SRCURL=https://archive.apache.org/dist/apr/apr-util-${TERMUX_PKG_VERSION}.tar.gz

@@ -123,6 +123,12 @@ if [[ "$CURRENT_MARKER" != "$EXPECTED_MARKER" ]]; then
     apply_patches \
         "$GENERATOR_DIRECTORY/f-droid-patches/bootstrap-patches" \
         "$PACKAGES_DIRECTORY"
+    CODEV_PACKAGE_PATCHES_DIRECTORY="$SCRIPT_DIRECTORY/patches/termux-packages"
+    if [[ -d "$CODEV_PACKAGE_PATCHES_DIRECTORY" ]]; then
+        apply_patches \
+            "$CODEV_PACKAGE_PATCHES_DIRECTORY" \
+            "$PACKAGES_DIRECTORY"
+    fi
     cp -f \
         "$GENERATOR_DIRECTORY/scripts/termux_generator_utils.sh" \
         "$PACKAGES_DIRECTORY/scripts/"

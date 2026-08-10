@@ -28,6 +28,10 @@ ZIP 格式。符号链接统一记录在 `SYMLINKS.txt`。
 APT 仓库中的包与 Bootstrap 使用同一个 `com.codev` 前缀，避免安装
 开发依赖后重新写入 `/data/data/com.termux`。
 
+构建阶段会额外应用 `patches/termux-packages/` 中的 CodeV 专用补丁。
+补丁与构建脚本一同纳入版本控制，避免运行时依赖当前设备上已安装的
+Termux 文件。
+
 ## Linux 或 GitHub Actions 构建
 
 依赖：
