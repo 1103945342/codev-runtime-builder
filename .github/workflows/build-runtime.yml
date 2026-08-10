@@ -17,6 +17,9 @@ jobs:
   runtime:
     runs-on: ubuntu-24.04
     timeout-minutes: 360
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -49,6 +52,3 @@ jobs:
       - name: Deploy APT repository
         id: deployment
         uses: actions/deploy-pages@v4
-        environment:
-          name: github-pages
-          url: ${{ steps.deployment.outputs.page_url }}
