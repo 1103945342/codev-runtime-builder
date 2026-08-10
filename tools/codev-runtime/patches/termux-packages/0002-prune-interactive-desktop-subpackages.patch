@@ -1,57 +1,26 @@
-diff --git a/packages/git/git-gitk.subpackage.sh b/packages/git/git-gitk.subpackage.sh
-deleted file mode 100644
---- a/packages/git/git-gitk.subpackage.sh
-+++ /dev/null
-@@ -1,7 +0,0 @@
--TERMUX_SUBPKG_DESCRIPTION="Git repository browser"
--TERMUX_SUBPKG_DEPENDS="tk"
--TERMUX_SUBPKG_INCLUDE="
--bin/gitk
--share/gitk
--share/man/man1/gitk.1*
--"
-diff --git a/packages/git/git-gui.subpackage.sh b/packages/git/git-gui.subpackage.sh
-deleted file mode 100644
---- a/packages/git/git-gui.subpackage.sh
-+++ /dev/null
-@@ -1,10 +0,0 @@
--TERMUX_SUBPKG_DESCRIPTION="A graphical interface to Git"
--TERMUX_SUBPKG_DEPENDS="tk"
--TERMUX_SUBPKG_INCLUDE="
--libexec/git-core/git-gui
--libexec/git-core/git-citool
--libexec/git-core/git-gui--askpass
--share/git-gui
--share/man/man1/git-gui.1.gz
--share/man/man1/git-citool.1.gz
--"
-diff --git a/packages/git/git-svn.subpackage.sh b/packages/git/git-svn.subpackage.sh
-deleted file mode 100644
---- a/packages/git/git-svn.subpackage.sh
-+++ /dev/null
-@@ -1,8 +0,0 @@
--TERMUX_SUBPKG_DESCRIPTION="Convert between Git and Subversion repositories"
--TERMUX_SUBPKG_DEPENDS="subversion-perl"
--TERMUX_SUBPKG_PLATFORM_INDEPENDENT=true
--TERMUX_SUBPKG_INCLUDE="
--libexec/git-core/git-svn*
--share/man/man1/git-svn*
--share/perl5/Git/SVN*
--"
-diff --git a/packages/python/python-tkinter.subpackage.sh b/packages/python/python-tkinter.subpackage.sh
-deleted file mode 100644
---- a/packages/python/python-tkinter.subpackage.sh
-+++ /dev/null
-@@ -1,12 +0,0 @@
--TERMUX_SUBPKG_DESCRIPTION="Tkinter support for Python 3"
--TERMUX_SUBPKG_DEPENDS="tcl, tk"
--TERMUX_SUBPKG_INCLUDE="
--bin/idle*
--lib/python${_MAJOR_VERSION}/idlelib
--lib/python${_MAJOR_VERSION}/tkinter
--lib/python${_MAJOR_VERSION}/turtle.py
--lib/python${_MAJOR_VERSION}/turtledemo
--lib/python${_MAJOR_VERSION}/lib-dynload/_tkinter.*.so
--"
--TERMUX_SUBPKG_BREAKS="python (<< 3.11.1-3)"
--TERMUX_SUBPKG_REPLACES="python (<< 3.11.1-3)"
+diff --git a/scripts/buildorder.py b/scripts/buildorder.py
+--- a/scripts/buildorder.py
++++ b/scripts/buildorder.py
+@@ -10,0 +11,4 @@
++codev_excluded_subpackages = set(filter(
++    None,
++    (os.getenv('CODEV_EXCLUDED_SUBPACKAGES') or '').split(','),
++))
+@@ -162 +166,4 @@
+-                if f"{self.name}-static" != subpkg.name:
++                if (
++                    f"{self.name}-static" != subpkg.name
++                    and subpkg.name not in codev_excluded_subpackages
++                ):
+diff --git a/packages/python/build.sh b/packages/python/build.sh
+--- a/packages/python/build.sh
++++ b/packages/python/build.sh
+@@ -20 +20 @@
+-TERMUX_PKG_BUILD_DEPENDS="tk"
++TERMUX_PKG_BUILD_DEPENDS=""
+@@ -22 +22 @@
+-TERMUX_PKG_SUGGESTS="python-tkinter"
++TERMUX_PKG_SUGGESTS=""
+@@ -154 +154 @@
+-	for module in _bz2 _curses _lzma _multiprocessing _sqlite3 _ssl _tkinter zlib _zstd; do
++	for module in _bz2 _curses _lzma _multiprocessing _sqlite3 _ssl zlib _zstd; do

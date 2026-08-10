@@ -159,17 +159,25 @@ pushd "$PACKAGES_DIRECTORY" >/dev/null
 scripts/run-docker.sh \
     sudo ln -sf "/data/data/$PACKAGE_NAME/aosp" /system
 scripts/run-docker.sh \
+    env CODEV_EXCLUDED_SUBPACKAGES="$CODEV_EXCLUDED_SUBPACKAGES" \
     scripts/build-bootstraps.sh \
     --add "$CODEV_BOOTSTRAP_PACKAGES" \
     --architectures "$ARCHITECTURES"
 
 for architecture in "${ARCHITECTURE_LIST[@]}"; do
     scripts/run-docker.sh \
+        env CODEV_EXCLUDED_SUBPACKAGES="$CODEV_EXCLUDED_SUBPACKAGES" \
         ./build-package.sh \
         -a "$architecture" \
         "${RUNTIME_PACKAGE_LIST[@]}"
 done
 popd >/dev/null
+
+IFS=',' read -r -a EXCLUDED_SUBPACKAGE_LIST <<< "$CODEV_EXCLUDED_SUBPACKAGES"
+for subpackage in "${EXCLUDED_SUBPACKAGE_LIST[@]}"; do
+    find "$PACKAGES_DIRECTORY/output" -type f \
+        -name "${subpackage}_*.deb" -delete
+done
 
 MANIFEST="$OUTPUT_DIRECTORY/codev-bootstrap.properties"
 {
@@ -217,6 +225,7 @@ generatorCommit=$GENERATOR_RESOLVED_COMMIT
 termuxPackagesCommit=$PACKAGES_RESOLVED_COMMIT
 architectures=$ARCHITECTURES
 runtimePackages=$CODEV_RUNTIME_PACKAGES
+excludedSubpackages=$CODEV_EXCLUDED_SUBPACKAGES
 EOF
 
 echo "CodeV runtime created in $OUTPUT_DIRECTORY"
