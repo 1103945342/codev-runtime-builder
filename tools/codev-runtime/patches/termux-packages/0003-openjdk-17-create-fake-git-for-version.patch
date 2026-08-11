@@ -1,0 +1,17 @@
+--- a/packages/openjdk-17/build.sh
++++ b/packages/openjdk-17/build.sh
+@@ -27,6 +27,15 @@ termux_step_pre_configure() {
+ 		-e "s%\@TERMUX_TMPDIR_PATH_LENGTH\@%${#tmpdir_path}%g" \
+ 		"$patch" | patch --silent -p1
++
++	# Create fake .git so that OpenJDK configure can determine version via git describe.
++	# The source tarball does not contain .git, which causes: "fatal: not a git repository"
++	if [[ ! -d .git ]]; then
++		git init -q
++		git add -A
++		git -c user.name=build -c user.email=build commit -q -m "jdk-${TERMUX_PKG_VERSION}-ga" --allow-empty
++		git -c user.name=build -c user.email=build tag "jdk-${TERMUX_PKG_VERSION}-ga"
++	fi
+ }
+ 
+ termux_step_configure() {

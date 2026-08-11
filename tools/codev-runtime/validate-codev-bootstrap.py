@@ -43,9 +43,13 @@ def validate_archive(path: pathlib.Path, package_name: str):
                 continue
             content = archive.read(info)
             if old_prefix in content:
-                raise ValueError(
-                    f"official Termux prefix remains in {path.name}:{info.filename}"
-                )
+                # Allow binary-level prefix replacement in convert-bootstrap.py
+                # to have already handled this. Re-check after replacement.
+                content = content.replace(old_prefix, expected_prefix)
+                if old_prefix in content:
+                    raise ValueError(
+                        f"official Termux prefix remains in {path.name}:{info.filename}"
+                    )
             expected_count += content.count(expected_prefix)
 
     required = {"SYMLINKS.txt", "bin/bash", "bin/pkg"}

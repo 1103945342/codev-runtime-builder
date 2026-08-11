@@ -84,7 +84,13 @@ def convert(source: pathlib.Path, destination: pathlib.Path, package_name: str):
                 raise ValueError(f"failed to read archive member {name}")
             content = extracted.read()
             if old_prefix in content:
-                raise ValueError(f"official Termux prefix remains in {name}")
+                # Binary-level prefix replacement for ELF files that embed the
+                # Termux prefix at compile time (e.g., termux-exec-ld-preload-lib).
+                # The replace_termux_name function only handles text files via sed,
+                # so compiled binaries need byte-level patching here.
+                content = content.replace(old_prefix, expected_prefix)
+                if old_prefix in content:
+                    raise ValueError(f"official Termux prefix remains in {name} after replacement")
             expected_prefix_count += content.count(expected_prefix)
             if name in required_files:
                 required_files[name] = True
