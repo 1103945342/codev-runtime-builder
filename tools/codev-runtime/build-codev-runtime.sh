@@ -106,6 +106,11 @@ export SOURCE_DATE_EPOCH
 
 export TERMUX_GENERATOR_HOME="$GENERATOR_DIRECTORY"
 export TERMUX_APP__PACKAGE_NAME="$PACKAGE_NAME"
+
+# Pass TERMUX_APP__PACKAGE_NAME into Docker so that packages like termux-exec
+# compile with the correct prefix instead of the default com.termux.
+export TERMUX_DOCKER_EXEC_EXTRA_ARGS="${TERMUX_DOCKER_EXEC_EXTRA_ARGS:-} --env TERMUX_APP__PACKAGE_NAME=$PACKAGE_NAME"
+export TERMUX_DOCKER_RUN_EXTRA_ARGS="${TERMUX_DOCKER_RUN_EXTRA_ARGS:-} --env TERMUX_APP__PACKAGE_NAME=$PACKAGE_NAME"
 source "$GENERATOR_DIRECTORY/scripts/termux_generator_utils.sh"
 
 CONTAINER_NAME="${PACKAGE_NAME//./-}-codev-runtime-builder"
